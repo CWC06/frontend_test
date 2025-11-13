@@ -1,0 +1,135 @@
+:root {
+  color-scheme: dark;
+  font-family: 'Outfit', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  background-color: #060712;
+  color: #f5f6fa;
+  scroll-behavior: smooth;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  min-height: 100vh;
+  background: radial-gradient(circle at top, #0f1535, #05060f 60%);
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+button {
+  font-family: inherit;
+}
+
+section {
+  width: min(1120px, 92vw);
+  margin: 0 auto;
+  padding: 5rem 0;
+}
+
+.section-title {
+  font-size: clamp(2.4rem, 3vw, 3rem);
+  font-weight: 600;
+  text-align: center;
+  margin-bottom: 1.5rem;
+}
+
+.section-subtitle {
+  font-size: clamp(1.05rem, 1.6vw, 1.2rem);
+  text-align: center;
+  color: rgba(229, 231, 249, 0.7);
+  max-width: 680px;
+  margin: 0.5rem auto 3rem;
+}
+
+.gradient-text {
+  background: linear-gradient(120deg, #7f5af0 0%, #2cb1ff 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  color: transparent;
+}
+
+.cta-button {
+  border: none;
+  background: linear-gradient(135deg, #7f5af0, #2cb1ff);
+  color: #05060f;
+  padding: 0.9rem 1.8rem;
+  font-size: 1rem;
+  font-weight: 600;
+  border-radius: 999px;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, filter 0.2s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.cta-button:hover,
+.cta-button:focus-visible {
+  transform: translateY(-2px) scale(1.02);
+  box-shadow: 0 12px 24px rgba(127, 90, 240, 0.35);
+  filter: brightness(1.05);
+}
+
+.cta-button.secondary {
+  background: transparent;
+  color: #f5f6fa;
+  border: 1px solid rgba(127, 90, 240, 0.7);
+}
+
+.cta-button.secondary:hover,
+.cta-button.secondary:focus-visible {
+  box-shadow: 0 10px 18px rgba(44, 177, 255, 0.25);
+}
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 1.5rem;
+}
+
+.stat-card {
+  padding: 1.8rem;
+  border-radius: 20px;
+  background: linear-gradient(160deg, rgba(21, 26, 52, 0.95), rgba(10, 12, 24, 0.95));
+  border: 1px solid rgba(127, 90, 240, 0.2);
+  backdrop-filter: blur(16px);
+  position: relative;
+  overflow: hidden;
+}
+
+.stat-card::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at top right, rgba(127, 90, 240, 0.25), transparent 60%);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.stat-card:hover::after {
+  opacity: 1;
+}
+
+.stat-value {
+  font-size: clamp(2.2rem, 3vw, 2.8rem);
+  font-weight: 600;
+  margin-bottom: 0.4rem;
+}
+
+.stat-label {
+  color: rgba(229, 231, 249, 0.7);
+  font-size: 0.95rem;
+}
+
+@media (max-width: 768px) {
+  section {
+    padding: 3.5rem 0;
+  }
+}

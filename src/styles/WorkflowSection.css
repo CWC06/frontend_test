@@ -1,0 +1,47 @@
+.workflow-timeline {
+  display: grid;
+  gap: 1.4rem;
+}
+
+.workflow-step {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 1.2rem;
+  align-items: flex-start;
+  padding: 1.6rem 1.8rem;
+  border-radius: 20px;
+  background: linear-gradient(160deg, rgba(14, 18, 36, 0.92), rgba(6, 8, 20, 0.9));
+  border: 1px solid rgba(127, 90, 240, 0.25);
+  position: relative;
+  overflow: hidden;
+}
+
+.workflow-step::after {
+  content: '';
+  position: absolute;
+  inset: auto -30% -80% auto;
+  width: 220px;
+  height: 220px;
+  background: radial-gradient(circle, rgba(44, 177, 255, 0.18), transparent 70%);
+  transform: rotate(20deg);
+}
+
+.workflow-number {
+  width: 2.8rem;
+  height: 2.8rem;
+  border-radius: 14px;
+  display: grid;
+  place-items: center;
+  font-weight: 600;
+  background: linear-gradient(140deg, rgba(127, 90, 240, 0.35), rgba(44, 177, 255, 0.35));
+}
+
+.workflow-step h3 {
+  font-size: 1.2rem;
+  margin-bottom: 0.5rem;
+}
+
+.workflow-step p {
+  color: rgba(229, 231, 249, 0.7);
+  line-height: 1.6;
+}

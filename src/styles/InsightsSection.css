@@ -1,0 +1,36 @@
+.insights-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 1.6rem;
+}
+
+.insight-card {
+  padding: 2rem 1.8rem;
+  border-radius: 24px;
+  background: linear-gradient(160deg, rgba(10, 15, 32, 0.92), rgba(6, 9, 22, 0.92));
+  border: 1px solid rgba(127, 90, 240, 0.3);
+  display: flex;
+  flex-direction: column;
+  gap: 0.9rem;
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.insight-card:hover,
+.insight-card:focus-within {
+  transform: translateY(-4px);
+  box-shadow: 0 20px 40px rgba(13, 18, 35, 0.5);
+}
+
+.insight-value {
+  font-size: clamp(2rem, 3vw, 2.8rem);
+  font-weight: 600;
+}
+
+.insight-card h3 {
+  font-size: 1.15rem;
+}
+
+.insight-card p {
+  color: rgba(229, 231, 249, 0.7);
+  line-height: 1.6;
+}
