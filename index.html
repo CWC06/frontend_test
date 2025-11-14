@@ -1,0 +1,1113 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ShotSync | Data-Driven Basketball Intelligence</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        color-scheme: dark;
+        --bg-dark: #0b0c10;
+        --bg-darker: #050608;
+        --accent: #f28b30;
+        --accent-soft: #f6a65b;
+        --text-primary: #f4f4f5;
+        --text-muted: #b0b1b8;
+        --card: rgba(19, 21, 28, 0.85);
+        --border: rgba(255, 255, 255, 0.06);
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      html,
+      body {
+        margin: 0;
+        padding: 0;
+        font-family: "Manrope", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+          sans-serif;
+        background: radial-gradient(circle at top right, rgba(242, 139, 48, 0.12), transparent 55%),
+          var(--bg-dark);
+        color: var(--text-primary);
+        min-height: 100%;
+        scroll-behavior: smooth;
+      }
+
+      body::before {
+        content: "";
+        position: fixed;
+        inset: 0;
+        background: linear-gradient(135deg, rgba(242, 139, 48, 0.08), transparent 55%);
+        pointer-events: none;
+        z-index: -2;
+      }
+
+      body::after {
+        content: "";
+        position: fixed;
+        inset: 0;
+        background: radial-gradient(circle at 20% 20%, rgba(242, 139, 48, 0.06), transparent 55%),
+          radial-gradient(circle at 80% 10%, rgba(0, 0, 0, 0.45), transparent 60%);
+        pointer-events: none;
+        z-index: -1;
+      }
+
+      a {
+        color: inherit;
+        text-decoration: none;
+      }
+
+      header {
+        position: sticky;
+        top: 0;
+        z-index: 20;
+        backdrop-filter: blur(16px);
+        background: rgba(5, 6, 8, 0.82);
+        border-bottom: 1px solid var(--border);
+      }
+
+      nav {
+        max-width: 1200px;
+        margin: 0 auto;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 1rem 2rem;
+      }
+
+      .logo {
+        display: flex;
+        align-items: center;
+        gap: 0.7rem;
+        font-weight: 700;
+        letter-spacing: 0.08em;
+        font-size: 1.1rem;
+      }
+
+      .logo-badge {
+        display: grid;
+        place-items: center;
+        width: 40px;
+        height: 40px;
+        border-radius: 12px;
+        background: radial-gradient(circle at 30% 30%, #f9b56b, var(--accent));
+        color: var(--bg-dark);
+        font-weight: 800;
+        box-shadow: 0 12px 24px rgba(242, 139, 48, 0.25);
+      }
+
+      .nav-links {
+        display: flex;
+        gap: 1.25rem;
+        font-weight: 500;
+        font-size: 0.95rem;
+      }
+
+      .nav-links a {
+        position: relative;
+        padding: 0.2rem 0;
+        color: var(--text-muted);
+        transition: color 0.3s ease;
+      }
+
+      .nav-links a::after {
+        content: "";
+        position: absolute;
+        left: 0;
+        right: 0;
+        bottom: -0.35rem;
+        height: 2px;
+        background: linear-gradient(90deg, transparent, var(--accent), transparent);
+        transform: scaleX(0);
+        transform-origin: center;
+        transition: transform 0.3s ease;
+      }
+
+      .nav-links a:hover {
+        color: var(--text-primary);
+      }
+
+      .nav-links a:hover::after {
+        transform: scaleX(1);
+      }
+
+      .cta-button {
+        padding: 0.75rem 1.6rem;
+        border-radius: 999px;
+        font-weight: 600;
+        background: linear-gradient(135deg, var(--accent), #fabe6d);
+        border: none;
+        color: #120b05;
+        cursor: pointer;
+        box-shadow: 0 12px 32px rgba(242, 139, 48, 0.25);
+        transition: transform 0.25s ease, box-shadow 0.25s ease;
+      }
+
+      .cta-button:hover {
+        transform: translateY(-3px) scale(1.02);
+        box-shadow: 0 20px 40px rgba(242, 139, 48, 0.35);
+      }
+
+      main {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 4rem 2rem 6rem;
+      }
+
+      .hero {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 4rem;
+        align-items: center;
+        padding: 4rem 0 6rem;
+      }
+
+      .hero h1 {
+        font-size: clamp(2.8rem, 5vw, 4rem);
+        margin-bottom: 1.5rem;
+        line-height: 1.08;
+        text-shadow: 0 12px 32px rgba(0, 0, 0, 0.35);
+      }
+
+      .hero p {
+        font-size: 1.1rem;
+        color: var(--text-muted);
+        line-height: 1.7;
+        margin-bottom: 2.5rem;
+        max-width: 520px;
+      }
+
+      .hero-actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 1rem;
+        align-items: center;
+      }
+
+      .secondary-button {
+        padding: 0.75rem 1.5rem;
+        border-radius: 999px;
+        border: 1px solid rgba(242, 139, 48, 0.4);
+        color: var(--accent);
+        background: rgba(242, 139, 48, 0.08);
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+      }
+
+      .secondary-button:hover {
+        border-color: rgba(242, 139, 48, 0.8);
+        background: rgba(242, 139, 48, 0.16);
+        transform: translateY(-2px);
+      }
+
+      .insight-card {
+        display: grid;
+        grid-template-columns: 60px 1fr;
+        gap: 1.5rem;
+        padding: 1.5rem;
+        border-radius: 24px;
+        background: var(--card);
+        border: 1px solid var(--border);
+        backdrop-filter: blur(12px);
+        margin-top: 2.5rem;
+        align-items: center;
+        box-shadow: 0 24px 48px rgba(0, 0, 0, 0.25);
+        transition: transform 0.35s ease, border-color 0.35s ease;
+      }
+
+      .insight-card:hover {
+        transform: translateY(-8px);
+        border-color: rgba(242, 139, 48, 0.45);
+      }
+
+      .insight-card-icon {
+        width: 60px;
+        height: 60px;
+        border-radius: 18px;
+        display: grid;
+        place-items: center;
+        background: rgba(242, 139, 48, 0.12);
+        color: var(--accent);
+        font-weight: 700;
+        letter-spacing: 0.08em;
+        font-size: 0.9rem;
+      }
+
+      .insight-card strong {
+        font-size: 1.2rem;
+        display: block;
+        margin-bottom: 0.4rem;
+      }
+
+      .three-panel {
+        position: relative;
+        background: linear-gradient(135deg, rgba(242, 139, 48, 0.08), rgba(22, 25, 32, 0.9));
+        border-radius: 28px;
+        border: 1px solid rgba(242, 139, 48, 0.18);
+        min-height: 440px;
+        padding: 2rem;
+        overflow: hidden;
+        box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04), 0 24px 60px rgba(0, 0, 0, 0.45);
+      }
+
+      .three-panel::after {
+        content: "";
+        position: absolute;
+        width: 320px;
+        height: 320px;
+        border-radius: 50%;
+        background: radial-gradient(circle, rgba(242, 139, 48, 0.22), transparent 70%);
+        top: -120px;
+        right: -120px;
+        filter: blur(20px);
+      }
+
+      .three-header {
+        position: absolute;
+        top: 2rem;
+        left: 2rem;
+        max-width: 280px;
+        z-index: 2;
+      }
+
+      .three-header span {
+        display: inline-block;
+        padding: 0.35rem 0.9rem;
+        border-radius: 999px;
+        background: rgba(242, 139, 48, 0.14);
+        color: var(--accent);
+        font-weight: 600;
+        font-size: 0.8rem;
+        letter-spacing: 0.08em;
+        margin-bottom: 1rem;
+      }
+
+      .three-header h2 {
+        margin: 0;
+        font-size: 1.8rem;
+        line-height: 1.4;
+      }
+
+      .three-canvas {
+        position: absolute;
+        inset: 0;
+        padding: 5rem 3rem 3rem;
+      }
+
+      .three-container {
+        width: 100%;
+        height: 100%;
+        border-radius: 22px;
+        background: rgba(6, 7, 10, 0.75);
+        border: 1px solid rgba(242, 139, 48, 0.14);
+        overflow: hidden;
+      }
+
+      section {
+        margin-top: 6rem;
+      }
+
+      .section-title {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-end;
+        gap: 1.5rem;
+        margin-bottom: 2.5rem;
+      }
+
+      .section-title h2 {
+        margin: 0;
+        font-size: clamp(1.8rem, 3vw, 2.6rem);
+      }
+
+      .section-title p {
+        color: var(--text-muted);
+        max-width: 420px;
+        line-height: 1.6;
+      }
+
+      .feature-grid {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 1.75rem;
+      }
+
+      .feature-card {
+        position: relative;
+        padding: 2rem;
+        border-radius: 24px;
+        background: var(--card);
+        border: 1px solid var(--border);
+        min-height: 260px;
+        display: flex;
+        flex-direction: column;
+        gap: 1.4rem;
+        transition: transform 0.35s ease, border-color 0.35s ease;
+        overflow: hidden;
+      }
+
+      .feature-card::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: radial-gradient(circle at top right, rgba(242, 139, 48, 0.16), transparent 55%);
+        opacity: 0;
+        transition: opacity 0.35s ease;
+      }
+
+      .feature-card:hover {
+        transform: translateY(-10px);
+        border-color: rgba(242, 139, 48, 0.45);
+      }
+
+      .feature-card:hover::after {
+        opacity: 1;
+      }
+
+      .feature-icon {
+        width: 54px;
+        height: 54px;
+        border-radius: 16px;
+        display: grid;
+        place-items: center;
+        background: rgba(242, 139, 48, 0.12);
+        color: var(--accent);
+        font-weight: 700;
+      }
+
+      .metrics-grid {
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 1.25rem;
+        margin-top: 3rem;
+      }
+
+      .metric-card {
+        padding: 1.75rem;
+        border-radius: 20px;
+        background: rgba(12, 14, 19, 0.9);
+        border: 1px solid rgba(242, 139, 48, 0.12);
+        text-align: center;
+        transition: transform 0.35s ease, border-color 0.35s ease;
+      }
+
+      .metric-card:hover {
+        transform: translateY(-6px);
+        border-color: rgba(242, 139, 48, 0.36);
+      }
+
+      .metric-card strong {
+        display: block;
+        font-size: 2rem;
+        color: var(--accent);
+        margin-bottom: 0.4rem;
+      }
+
+      .profile-section {
+        display: grid;
+        grid-template-columns: 1.1fr 0.9fr;
+        gap: 2.5rem;
+        align-items: stretch;
+      }
+
+      .profile-card {
+        border-radius: 26px;
+        background: linear-gradient(135deg, rgba(20, 21, 29, 0.92), rgba(6, 7, 11, 0.92));
+        border: 1px solid rgba(242, 139, 48, 0.16);
+        padding: 2.5rem;
+        display: flex;
+        flex-direction: column;
+        gap: 1.5rem;
+        box-shadow: 0 20px 50px rgba(0, 0, 0, 0.45);
+      }
+
+      .profile-card header {
+        position: relative;
+        background: none;
+        border-bottom: none;
+        padding: 0;
+      }
+
+      .profile-card h3 {
+        margin: 0;
+        font-size: 1.6rem;
+      }
+
+      .badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.4rem;
+        padding: 0.45rem 0.85rem;
+        border-radius: 999px;
+        background: rgba(242, 139, 48, 0.14);
+        color: var(--accent);
+        font-size: 0.8rem;
+        font-weight: 600;
+        letter-spacing: 0.08em;
+      }
+
+      .stat-list {
+        display: grid;
+        gap: 1rem;
+      }
+
+      .stat-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 1rem 1.2rem;
+        border-radius: 18px;
+        background: rgba(8, 9, 13, 0.85);
+        border: 1px solid rgba(242, 139, 48, 0.12);
+        transition: transform 0.3s ease, border-color 0.3s ease;
+      }
+
+      .stat-row:hover {
+        transform: translateX(6px);
+        border-color: rgba(242, 139, 48, 0.35);
+      }
+
+      .timeline {
+        border-radius: 24px;
+        border: 1px solid rgba(242, 139, 48, 0.12);
+        background: rgba(12, 14, 19, 0.88);
+        padding: 2.2rem 2rem;
+        display: grid;
+        gap: 1.6rem;
+      }
+
+      .timeline-step {
+        display: flex;
+        gap: 1.2rem;
+        align-items: flex-start;
+      }
+
+      .timeline-step span {
+        width: 32px;
+        height: 32px;
+        border-radius: 12px;
+        background: rgba(242, 139, 48, 0.16);
+        color: var(--accent);
+        display: grid;
+        place-items: center;
+        font-weight: 700;
+      }
+
+      .cta-section {
+        position: relative;
+        margin-top: 6rem;
+        padding: 3rem 3.5rem;
+        border-radius: 28px;
+        background: linear-gradient(135deg, rgba(242, 139, 48, 0.16), rgba(5, 6, 9, 0.92));
+        border: 1px solid rgba(242, 139, 48, 0.22);
+        overflow: hidden;
+      }
+
+      .cta-section::before {
+        content: "";
+        position: absolute;
+        width: 480px;
+        height: 480px;
+        border-radius: 50%;
+        background: radial-gradient(circle, rgba(242, 139, 48, 0.18), transparent 70%);
+        top: -220px;
+        right: -120px;
+      }
+
+      .cta-section h2 {
+        margin: 0 0 1rem;
+        font-size: clamp(2rem, 4vw, 2.8rem);
+      }
+
+      .cta-section p {
+        max-width: 520px;
+        color: var(--text-muted);
+        line-height: 1.7;
+        margin-bottom: 2rem;
+      }
+
+      input {
+        transition: border-color 0.25s ease, box-shadow 0.25s ease;
+      }
+
+      input::placeholder {
+        color: rgba(255, 255, 255, 0.55);
+        font-weight: 500;
+      }
+
+      input:focus {
+        border-color: rgba(242, 139, 48, 0.55);
+        box-shadow: 0 0 0 4px rgba(242, 139, 48, 0.12);
+      }
+
+      footer {
+        max-width: 1200px;
+        margin: 5rem auto 2rem;
+        padding: 2rem 2rem 0;
+        border-top: 1px solid var(--border);
+        display: flex;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        gap: 1rem;
+        color: var(--text-muted);
+        font-size: 0.9rem;
+      }
+
+      .reveal {
+        opacity: 0;
+        transform: translateY(35px);
+        transition: opacity 0.6s ease, transform 0.6s ease;
+      }
+
+      .reveal.visible {
+        opacity: 1;
+        transform: translateY(0);
+      }
+
+      @media (max-width: 1024px) {
+        nav {
+          flex-direction: column;
+          gap: 1rem;
+        }
+
+        .hero {
+          grid-template-columns: 1fr;
+        }
+
+        .three-header {
+          position: static;
+          margin-bottom: 1.5rem;
+        }
+
+        .three-canvas {
+          position: relative;
+          padding: 0;
+        }
+
+        .feature-grid {
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+
+        .profile-section {
+          grid-template-columns: 1fr;
+        }
+      }
+
+      @media (max-width: 768px) {
+        main {
+          padding: 3rem 1.5rem 4rem;
+        }
+
+        nav {
+          padding: 0.8rem 1.5rem;
+        }
+
+        .nav-links {
+          flex-wrap: wrap;
+          justify-content: center;
+        }
+
+        .metrics-grid {
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+
+        .feature-grid {
+          grid-template-columns: 1fr;
+        }
+
+        .hero-actions {
+          flex-direction: column;
+          align-items: flex-start;
+        }
+
+        .cta-section {
+          padding: 2.5rem 1.8rem;
+        }
+      }
+
+      @media (max-width: 520px) {
+        .metrics-grid {
+          grid-template-columns: 1fr;
+        }
+
+        .three-panel {
+          padding: 1.5rem;
+        }
+
+        .three-container {
+          height: 320px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <nav>
+        <div class="logo">
+          <div class="logo-badge">SS</div>
+          <div>
+            <div>ShotSync</div>
+            <small style="color: var(--text-muted); font-weight: 500">Precision Basketball IQ</small>
+          </div>
+        </div>
+        <div class="nav-links">
+          <a href="#features">Platform</a>
+          <a href="#profiles">Player Profiles</a>
+          <a href="#workflow">How it works</a>
+          <a href="#contact">Contact</a>
+        </div>
+        <button class="cta-button" onclick="document.getElementById('contact').scrollIntoView({behavior: 'smooth'})">
+          Request a Demo
+        </button>
+      </nav>
+    </header>
+
+    <main id="root"></main>
+
+    <script src="https://unpkg.com/react@18/umd/react.development.js" crossorigin></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js" crossorigin></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <script src="https://unpkg.com/three@0.160.0/build/three.min.js"></script>
+
+    <script type="text/babel">
+      const { useEffect, useRef } = React;
+
+      const stats = [
+        { label: "Live tracked games", value: "12K+" },
+        { label: "Shot patterns analyzed", value: "3.2M" },
+        { label: "Player growth rate", value: "+34%" },
+        { label: "Coach satisfaction", value: "98%" },
+      ];
+
+      const features = [
+        {
+          title: "Live Stat Intelligence",
+          description:
+            "Capture real-time shot charts, advanced splits, and predictive run alerts while the game unfolds.",
+          icon: "📊",
+        },
+        {
+          title: "Player DNA Profiles",
+          description:
+            "Interactive career timelines, performance anomalies, and benchmarks tailored to each athlete.",
+          icon: "🧬",
+        },
+        {
+          title: "Collaborative Locker Room",
+          description:
+            "Share actionable film notes, assign player focuses, and sync lineup adjustments instantly.",
+          icon: "🤝",
+        },
+      ];
+
+      const timeline = [
+        {
+          title: "Capture",
+          description: "Streamline every possession with automated live stat tracking across devices.",
+        },
+        {
+          title: "Analyze",
+          description: "Surface momentum swings, shot quality heatmaps, and opponent tendencies in seconds.",
+        },
+        {
+          title: "Activate",
+          description: "Deliver personalized scouting decks and practice plans that sync with your schedule.",
+        },
+      ];
+
+      const ScrollReveal = () => {
+        useEffect(() => {
+          const elements = document.querySelectorAll(".reveal");
+          const observer = new IntersectionObserver(
+            (entries) => {
+              entries.forEach((entry) => {
+                if (entry.isIntersecting) {
+                  entry.target.classList.add("visible");
+                  observer.unobserve(entry.target);
+                }
+              });
+            },
+            {
+              threshold: 0.2,
+            }
+          );
+
+          elements.forEach((el) => observer.observe(el));
+
+          return () => observer.disconnect();
+        }, []);
+
+        return null;
+      };
+
+      const ThreeDShowcase = () => {
+        const mountRef = useRef(null);
+
+        useEffect(() => {
+          if (!mountRef.current) return;
+          const { clientWidth: width, clientHeight: height } = mountRef.current;
+          const scene = new THREE.Scene();
+          scene.background = new THREE.Color(0x07090d);
+
+          const camera = new THREE.PerspectiveCamera(35, width / height, 0.1, 100);
+          camera.position.set(0, 0.4, 5);
+
+          const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+          renderer.setPixelRatio(window.devicePixelRatio);
+          renderer.setSize(width, height);
+          renderer.shadowMap.enabled = true;
+          mountRef.current.appendChild(renderer.domElement);
+
+          const ambient = new THREE.AmbientLight(0xffffff, 0.4);
+          scene.add(ambient);
+
+          const mainLight = new THREE.PointLight(0xfce3c3, 1.1);
+          mainLight.position.set(4, 6, 6);
+          scene.add(mainLight);
+
+          const rimLight = new THREE.PointLight(0xf28b30, 1.2);
+          rimLight.position.set(-3, -4, -2);
+          scene.add(rimLight);
+
+          const base = new THREE.Group();
+          scene.add(base);
+
+          const geometry = new THREE.SphereGeometry(1.25, 48, 48);
+          const material = new THREE.MeshStandardMaterial({
+            color: 0xf28b30,
+            roughness: 0.42,
+            metalness: 0.18,
+            emissive: 0x140b06,
+            emissiveIntensity: 0.25,
+          });
+          const basketball = new THREE.Mesh(geometry, material);
+          basketball.castShadow = true;
+          base.add(basketball);
+
+          const addSeam = (rotation) => {
+            const torusGeometry = new THREE.TorusGeometry(1.255, 0.025, 16, 128);
+            const torusMaterial = new THREE.MeshStandardMaterial({
+              color: 0x1b1c21,
+              roughness: 0.7,
+              metalness: 0.05,
+            });
+            const seam = new THREE.Mesh(torusGeometry, torusMaterial);
+            seam.rotation.copy(rotation);
+            base.add(seam);
+          };
+
+          addSeam(new THREE.Euler(Math.PI / 2, 0, 0));
+          addSeam(new THREE.Euler(0, 0, Math.PI / 2));
+
+          const curveMaterial = new THREE.LineBasicMaterial({ color: 0x1b1c21, linewidth: 2 });
+          const createCurve = (thetaOffset = 0) => {
+            const points = [];
+            for (let i = 0; i <= 64; i++) {
+              const theta = (i / 64) * Math.PI - Math.PI / 2;
+              const radius = Math.cos(theta) * 1.25;
+              const y = Math.sin(theta) * 1.25;
+              points.push(new THREE.Vector3(Math.cos(thetaOffset) * radius, y, Math.sin(thetaOffset) * radius));
+            }
+            const curve = new THREE.BufferGeometry().setFromPoints(points);
+            const line = new THREE.Line(curve, curveMaterial);
+            base.add(line);
+          };
+
+          createCurve(Math.PI / 4);
+          createCurve(-Math.PI / 4);
+
+          const floorGeometry = new THREE.CircleGeometry(2.4, 64);
+          const floorMaterial = new THREE.MeshStandardMaterial({
+            color: 0x0c0d12,
+            roughness: 0.8,
+            metalness: 0.05,
+            emissive: 0x050507,
+            emissiveIntensity: 0.4,
+          });
+          const floor = new THREE.Mesh(floorGeometry, floorMaterial);
+          floor.rotation.x = -Math.PI / 2;
+          floor.position.y = -1.6;
+          floor.receiveShadow = true;
+          scene.add(floor);
+
+          const highlightGeometry = new THREE.PlaneGeometry(2.4, 2.4);
+          const highlightMaterial = new THREE.MeshBasicMaterial({
+            color: 0xf6a65b,
+            transparent: true,
+            opacity: 0.08,
+            side: THREE.DoubleSide,
+          });
+          const highlight = new THREE.Mesh(highlightGeometry, highlightMaterial);
+          highlight.rotation.x = -Math.PI / 2;
+          highlight.position.y = -1.59;
+          scene.add(highlight);
+
+          let mouseX = 0;
+          let mouseY = 0;
+
+          const onPointerMove = (event) => {
+            const rect = renderer.domElement.getBoundingClientRect();
+            mouseX = ((event.clientX - rect.left) / rect.width) * 2 - 1;
+            mouseY = ((event.clientY - rect.top) / rect.height) * 2 - 1;
+          };
+
+          renderer.domElement.addEventListener("pointermove", onPointerMove);
+
+          let frameId;
+          const animate = () => {
+            basketball.rotation.y += 0.01;
+            basketball.rotation.x += 0.003;
+            base.rotation.y += (mouseX * 0.6 - base.rotation.y) * 0.04;
+            base.rotation.x += (-mouseY * 0.3 - base.rotation.x) * 0.04;
+            renderer.render(scene, camera);
+            frameId = requestAnimationFrame(animate);
+          };
+          animate();
+
+          const onResize = () => {
+            if (!mountRef.current) return;
+            const { clientWidth, clientHeight } = mountRef.current;
+            renderer.setSize(clientWidth, clientHeight);
+            camera.aspect = clientWidth / clientHeight;
+            camera.updateProjectionMatrix();
+          };
+
+          window.addEventListener("resize", onResize);
+
+          return () => {
+            cancelAnimationFrame(frameId);
+            renderer.domElement.removeEventListener("pointermove", onPointerMove);
+            window.removeEventListener("resize", onResize);
+            mountRef.current && mountRef.current.removeChild(renderer.domElement);
+            geometry.dispose();
+            material.dispose();
+            renderer.dispose();
+          };
+        }, []);
+
+        return <div ref={mountRef} className="three-container"></div>;
+      };
+
+      const App = () => (
+        <>
+          <ScrollReveal />
+          <section className="hero reveal">
+            <div>
+              <h1>Sync your shot selection with elite-level basketball intelligence.</h1>
+              <p>
+                ShotSync equips staffs, players, and organizations with the clearest picture of how to win.
+                Turn live stat streams into predictive adjustments, spotlight breakout players instantly, and
+                evolve every practice with data-backed precision.
+              </p>
+              <div className="hero-actions">
+                <button
+                  className="cta-button"
+                  onClick={() => document.getElementById("contact").scrollIntoView({ behavior: "smooth" })}
+                >
+                  Book a Strategy Call
+                </button>
+                <button className="secondary-button" onClick={() => alert("Thanks for exploring ShotSync!")}>
+                  Explore sample dashboard
+                </button>
+              </div>
+              <div className="insight-card">
+                <div className="insight-card-icon">AI</div>
+                <div>
+                  <strong>ShotSync Insight Engine</strong>
+                  <span style={{ color: "var(--text-muted)", lineHeight: 1.6 }}>
+                    Automated anomaly alerts, clutch-time predictive scores, and efficiency scoring heatmaps
+                    delivered straight to your bench and player profiles.
+                  </span>
+                </div>
+              </div>
+            </div>
+            <div className="three-panel">
+              <div className="three-header">
+                <span>Immersive Analytics</span>
+                <h2>
+                  3D shot charts built to inspire smarter plays and sharper player development.
+                </h2>
+              </div>
+              <div className="three-canvas">
+                <ThreeDShowcase />
+              </div>
+            </div>
+          </section>
+
+          <section id="features" className="reveal">
+            <div className="section-title">
+              <h2>Everything your basketball program needs to dominate the numbers game.</h2>
+              <p>
+                From live game tracking to post-game reflection, ShotSync turns your team into a data-fluent
+                unit. Each module is crafted to shorten decision cycles and amplify trust between players and
+                coaches.
+              </p>
+            </div>
+            <div className="feature-grid">
+              {features.map((feature) => (
+                <article key={feature.title} className="feature-card">
+                  <div className="feature-icon">{feature.icon}</div>
+                  <h3>{feature.title}</h3>
+                  <p style={{ color: "var(--text-muted)", lineHeight: 1.6 }}>{feature.description}</p>
+                  <button className="secondary-button" style={{ alignSelf: "flex-start" }}>
+                    See it in action →
+                  </button>
+                </article>
+              ))}
+            </div>
+            <div className="metrics-grid">
+              {stats.map((stat) => (
+                <div key={stat.label} className="metric-card">
+                  <strong>{stat.value}</strong>
+                  <span style={{ color: "var(--text-muted)" }}>{stat.label}</span>
+                </div>
+              ))}
+            </div>
+          </section>
+
+          <section id="profiles" className="reveal" style={{ marginTop: "7rem" }}>
+            <div className="section-title">
+              <h2>Player profiles that read like scouting reports and feel like highlight reels.</h2>
+              <p>
+                Give every athlete a living dossier—career arcs, dynamic shot quality breakdowns, plus
+                progress plans tuned to individual goals.
+              </p>
+            </div>
+            <div className="profile-section">
+              <div className="profile-card">
+                <header>
+                  <div className="badge">Featured Player</div>
+                  <h3>Skylar Mason</h3>
+                  <span style={{ color: "var(--text-muted)" }}>Combo Guard · Rising Senior</span>
+                </header>
+                <div className="stat-list">
+                  <div className="stat-row">
+                    <div>
+                      <strong>Effective FG%</strong>
+                      <div style={{ color: "var(--text-muted)", fontSize: "0.9rem" }}>Last 8 games</div>
+                    </div>
+                    <span style={{ color: "var(--accent)", fontWeight: 700 }}>63%</span>
+                  </div>
+                  <div className="stat-row">
+                    <div>
+                      <strong>Catch-and-Shoot</strong>
+                      <div style={{ color: "var(--text-muted)", fontSize: "0.9rem" }}>Corner 3 accuracy</div>
+                    </div>
+                    <span style={{ color: "var(--accent)", fontWeight: 700 }}>47%</span>
+                  </div>
+                  <div className="stat-row">
+                    <div>
+                      <strong>Defensive Impact</strong>
+                      <div style={{ color: "var(--text-muted)", fontSize: "0.9rem" }}>Deflections per game</div>
+                    </div>
+                    <span style={{ color: "var(--accent)", fontWeight: 700 }}>3.8</span>
+                  </div>
+                  <div className="stat-row">
+                    <div>
+                      <strong>ShotSync Rating</strong>
+                      <div style={{ color: "var(--text-muted)", fontSize: "0.9rem" }}>vs conference guards</div>
+                    </div>
+                    <span style={{ color: "var(--accent)", fontWeight: 700 }}>Top 5%</span>
+                  </div>
+                </div>
+              </div>
+              <div className="timeline" id="workflow">
+                <div>
+                  <div className="badge">Workflow</div>
+                  <h3>How ShotSync keeps your staff three plays ahead.</h3>
+                </div>
+                {timeline.map((step, index) => (
+                  <div key={step.title} className="timeline-step">
+                    <span>{index + 1}</span>
+                    <div>
+                      <strong>{step.title}</strong>
+                      <p style={{ color: "var(--text-muted)", lineHeight: 1.6 }}>{step.description}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </section>
+
+          <section className="cta-section reveal" id="contact">
+            <h2>Let’s sync your program with pro-grade basketball analytics.</h2>
+            <p>
+              Tell us about your roster, competition window, and unique goals. We’ll tailor a ShotSync demo
+              that shows how our data engine fuels smarter rotations, practice plans, and player development
+              arcs.
+            </p>
+            <div style={{ display: "flex", gap: "1rem", flexWrap: "wrap" }}>
+              <input
+                type="text"
+                placeholder="Full name"
+                style={inputStyle}
+              />
+              <input
+                type="email"
+                placeholder="Work email"
+                style={inputStyle}
+              />
+              <input
+                type="text"
+                placeholder="Team or organization"
+                style={{ ...inputStyle, flex: "1 1 240px" }}
+              />
+              <button className="cta-button" style={{ padding: "0.9rem 2.5rem" }}>
+                Schedule my demo
+              </button>
+            </div>
+          </section>
+          <footer className="reveal">
+            <div>
+              <strong style={{ fontSize: "1.1rem", letterSpacing: "0.08em" }}>ShotSync</strong>
+              <p style={{ color: "var(--text-muted)", maxWidth: "360px", marginTop: "0.6rem" }}>
+                Built for high-performance programs who believe data should feel like a competitive edge—not
+                a burden. Analytics, automation, and alignment for every possession.
+              </p>
+            </div>
+            <div style={{ display: "grid", gap: "0.4rem" }}>
+              <span style={{ color: "var(--text-primary)", fontWeight: 600 }}>Visit</span>
+              <span>123 Hardwood Row, Suite 24</span>
+              <span>Brooklyn, NY 11201</span>
+            </div>
+            <div style={{ display: "grid", gap: "0.4rem" }}>
+              <span style={{ color: "var(--text-primary)", fontWeight: 600 }}>Connect</span>
+              <a href="mailto:team@shotsync.com" style={{ color: "var(--text-muted)" }}>team@shotsync.com</a>
+              <a href="tel:+12125550123" style={{ color: "var(--text-muted)" }}>+1 (212) 555-0123</a>
+              <div style={{ display: "flex", gap: "0.75rem", marginTop: "0.3rem" }}>
+                <a href="#" className="secondary-button" style={{ padding: "0.4rem 0.9rem" }}>
+                  LinkedIn
+                </a>
+                <a href="#" className="secondary-button" style={{ padding: "0.4rem 0.9rem" }}>
+                  Instagram
+                </a>
+              </div>
+            </div>
+          </footer>
+        </>
+      );
+
+      const inputStyle = {
+        padding: "0.85rem 1.1rem",
+        borderRadius: "14px",
+        border: "1px solid rgba(242, 139, 48, 0.22)",
+        background: "rgba(10, 11, 15, 0.85)",
+        color: "var(--text-primary)",
+        minWidth: "220px",
+        outline: "none",
+        fontFamily: 'Manrope, sans-serif',
+      };
+
+      const root = ReactDOM.createRoot(document.getElementById("root"));
+      root.render(<App />);
+    </script>
+  </body>
+</html>
