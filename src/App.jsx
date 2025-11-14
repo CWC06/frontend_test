@@ -12,6 +12,19 @@ const orbitingStats = [
   { label: 'Speed', value: '32 km/h' },
 ];
 
+const playerSlices = Array.from({ length: 14 }, (_, index, array) => {
+  const midpoint = (array.length - 1) / 2;
+  const offset = index - midpoint;
+  const intensity = 1 - Math.abs(offset) / (midpoint + 1);
+
+  return {
+    index,
+    depth: offset * 8,
+    scale: 0.88 + intensity * 0.12,
+    opacity: 0.38 + intensity * 0.42,
+  };
+});
+
 const App = () => {
   return (
     <div className="app">
@@ -43,7 +56,22 @@ const App = () => {
         <div className="hero__visual" aria-hidden="true">
           <div className="hologram">
             <div className="hologram__grid" />
-            <div className="hologram__player" />
+            <div className="hologram__player">
+              {playerSlices.map((slice) => (
+                <span
+                  key={slice.index}
+                  className="hologram__slice"
+                  style={{
+                    '--index': slice.index,
+                    '--total': playerSlices.length,
+                    '--depth': `${slice.depth}px`,
+                    '--scale': String(slice.scale),
+                    '--opacity': String(slice.opacity),
+                  }}
+                />
+              ))}
+              <div className="hologram__trail" />
+            </div>
             <div className="hologram__glow" />
             <div className="hologram__base" />
             <div className="hologram__ring">
